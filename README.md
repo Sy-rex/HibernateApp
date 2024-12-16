@@ -5,3 +5,5 @@ Commit №1 Training to use Annotations @Entity, @Table, @Column, @Id and simple
 Commit №2 Training to use Annotation @GeneratedValue
 
 Commit №3 Training to update and delete data in Hibernate
+
+Commit №4 Training to use HQL for manipulation data
