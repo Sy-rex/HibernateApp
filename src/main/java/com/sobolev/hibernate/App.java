@@ -1,9 +1,7 @@
 package com.sobolev.hibernate;
 
 
-import com.sobolev.hibernate.model.Item;
-import com.sobolev.hibernate.model.Passport;
-import com.sobolev.hibernate.model.Person;
+import com.sobolev.hibernate.model.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -15,30 +13,47 @@ import java.util.List;
 public class App {
     public static void main(String[] args) {
         Configuration configuration = new Configuration().addAnnotatedClass(Person.class)
-                .addAnnotatedClass(Item.class).addAnnotatedClass(Passport.class);
+                .addAnnotatedClass(Item.class).addAnnotatedClass(Passport.class)
+                .addAnnotatedClass(Movie.class).addAnnotatedClass(Actor.class);
 
         SessionFactory sessionFactory = configuration.buildSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
 
-        try{
+        try(sessionFactory){
+            Session session = sessionFactory.getCurrentSession();
             session.beginTransaction();
 
-//            Person person = session.get(Person.class, 7);
+//            Movie movie = new Movie("Pulp fiction",1994);
+//            Actor actor1 = new Actor("Harvey Keitel",81);
+//            Actor actor2 = new Actor("Samuel L.Jackson",72);
 //
-//            System.out.println(person.getPassport().getPassportNumber());
+//            movie.setActors(new ArrayList<>(List.of(actor1, actor2)));
+//
+//            actor1.setMovies(new ArrayList<>(Collections.singletonList(movie)));
+//            actor2.setMovies(new ArrayList<>(Collections.singletonList(movie)));
+//
+//            session.save(movie);
+//            session.save(actor1);
+//            session.save(actor2);
 
-//            Passport passport = session.get(Passport.class, 7);
-//            System.out.println(passport.getPerson().getName());
+//            Movie movie = session.get(Movie.class, 1);
+//            System.out.println(movie.getActors());
 
-//            Person person = session.get(Person.class, 7);
-//            person.getPassport().setPassportNumber(77777);
+//            Movie movie = new Movie("Reservoir Dogs",1992);
+//            Actor actor = session.get(Actor.class, 1);
+//
+//            movie.setActors(new ArrayList<>(Collections.singletonList(actor)));
+//            actor.getMovies().add(movie);
+//
+//            session.save(movie);
+            Actor actor = session.get(Actor.class, 2);
+            System.out.println(actor.getMovies());
 
-            Person person = session.get(Person.class, 8);
-            session.remove(person);
+            Movie movieToRemove = actor.getMovies().get(0);
+
+            actor.getMovies().remove(0);
+            movieToRemove.getActors().remove(actor);
 
             session.getTransaction().commit();
-        }finally {
-            sessionFactory.close();
         }
     }
 }
