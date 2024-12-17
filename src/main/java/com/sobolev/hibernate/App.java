@@ -22,62 +22,13 @@ public class App {
         try{
             session.beginTransaction();
 
-//            Person person = session.get(Person.class, 3);
-//            System.out.println(person);
-//
-//            List<Item> items =  person.getItems();
-//
-//            System.out.println(items);
+            Person person = new Person("Test cascading",30);
 
-//            Item item = session.get(Item.class, 5);
-//
-//            System.out.println(item);
-//
-//            Person person = item.getOwner();
-//
-//            System.out.println(person);
+            person.addItem(new Item("Item 1"));
+            person.addItem(new Item("Item 2"));
+            person.addItem(new Item("Item 3"));
 
-//            Person person = session.get(Person.class, 2);
-//
-//            Item item = new Item("Item from Hibernate", person);
-//
-//            session.save(item);
-//
-//            person.getItems().add(item);
-
-//            Person person = new Person("Test person",34);
-//
-//            Item newItem = new Item("Item from Hibernate 2",person);
-//
-//            person.setItems(new ArrayList<>(Collections.singletonList(newItem)));
-//
-//            session.save(person);
-//            session.save(newItem);
-
-//            Person person = session.get(Person.class, 3);
-//
-//            List<Item> items = person.getItems();
-//
-//            for (Item item : items) {
-//                session.remove(item);
-//            }
-//
-//            person.getItems().clear();
-
-//            Person person = session.get(Person.class, 2);
-//
-//            session.remove(person);
-//
-//            person.getItems().forEach(i -> i.setOwner(null));
-
-            Person person = session.get(Person.class, 4);
-
-            Item item = session.get(Item.class, 1);
-
-            item.getOwner().getItems().remove(item);
-
-            item.setOwner(person);
-            person.getItems().add(item);
+            session.save(person);
 
             session.getTransaction().commit();
         }finally {
