@@ -15,3 +15,5 @@ Commit №6 Training to use cascading with Annotation @Cascade and learning the 
 Commit №7 Training to use Annotation @OneToOne
 
 Commit №8 Training to use Annotation @ManyToMany
+
+Commit №9 Training to use Lazy loading and Eager loading

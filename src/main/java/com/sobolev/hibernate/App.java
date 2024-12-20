@@ -2,6 +2,7 @@ package com.sobolev.hibernate;
 
 
 import com.sobolev.hibernate.model.*;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -13,8 +14,7 @@ import java.util.List;
 public class App {
     public static void main(String[] args) {
         Configuration configuration = new Configuration().addAnnotatedClass(Person.class)
-                .addAnnotatedClass(Item.class).addAnnotatedClass(Passport.class)
-                .addAnnotatedClass(Movie.class).addAnnotatedClass(Actor.class);
+                .addAnnotatedClass(Item.class).addAnnotatedClass(Passport.class);
 
         SessionFactory sessionFactory = configuration.buildSessionFactory();
 
@@ -22,38 +22,47 @@ public class App {
             Session session = sessionFactory.getCurrentSession();
             session.beginTransaction();
 
-//            Movie movie = new Movie("Pulp fiction",1994);
-//            Actor actor1 = new Actor("Harvey Keitel",81);
-//            Actor actor2 = new Actor("Samuel L.Jackson",72);
+//            Person person = session.get(Person.class, 6);
+//            System.out.println("Получили человека");
 //
-//            movie.setActors(new ArrayList<>(List.of(actor1, actor2)));
-//
-//            actor1.setMovies(new ArrayList<>(Collections.singletonList(movie)));
-//            actor2.setMovies(new ArrayList<>(Collections.singletonList(movie)));
-//
-//            session.save(movie);
-//            session.save(actor1);
-//            session.save(actor2);
+//            // Получим связанные сущности(Lazy)
+//            System.out.println(person.getItems());
 
-//            Movie movie = session.get(Movie.class, 1);
-//            System.out.println(movie.getActors());
 
-//            Movie movie = new Movie("Reservoir Dogs",1992);
-//            Actor actor = session.get(Actor.class, 1);
+//            // Сразу получаем неленивую загрузку(Eager)
+//            Item item = session.get(Item.class, 1);
+//            System.out.println("Получили товар");
 //
-//            movie.setActors(new ArrayList<>(Collections.singletonList(actor)));
-//            actor.getMovies().add(movie);
+//            System.out.println(item.getOwner());
+
+//            Person person = session.get(Person.class, 6);
+//            System.out.println("Получили человека из таблицы");
+//            System.out.println(person);
 //
-//            session.save(movie);
-            Actor actor = session.get(Actor.class, 2);
-            System.out.println(actor.getMovies());
+//            Hibernate.initialize(person.getItems()); // подгружаем связанные ленивые сущности
+////            System.out.println(person.getItems());
 
-            Movie movieToRemove = actor.getMovies().get(0);
-
-            actor.getMovies().remove(0);
-            movieToRemove.getActors().remove(actor);
+            Person person = session.get(Person.class, 6);
+            System.out.println("Получили человека из таблицы");
 
             session.getTransaction().commit();
+            // session.close()
+            System.out.println("Сессия закончилась");
+
+            // открываем сессию и транзакцию ещё раз
+            session = sessionFactory.getCurrentSession();
+            session.beginTransaction();
+
+            person = (Person) session.merge(person);
+
+            Hibernate.initialize(person.getItems());
+
+            session.getTransaction().commit();
+
+            // Вне сессии можно получать товары при EAGER
+            System.out.println("Вне 2 сессии");
+            System.out.println(person.getItems());
+
         }
     }
 }
